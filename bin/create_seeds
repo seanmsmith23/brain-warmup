@@ -1,0 +1,32 @@
+require 'csv'
+require 'awesome_print'
+
+def parse
+  table = CSV.read('/Users/seansmith/gSchoolWork/warmups/animal-brains-warmup/lib/assets/Animals.csv', headers: true)
+  table.map do |row|
+    row.to_hash
+  end
+end
+
+def generate_seeds(animals)
+  output = ''
+  animals.each do |brain|
+    seed = "Brain.create!(animal: '#{brain['animal']}', body: #{brain['body']}, brain: #{brain['brain']})\n\n"
+    output << seed
+  end
+  output
+end
+
+def write_seeds(seed)
+  File.open('/Users/seansmith/gSchoolWork/warmups/animal-brains-warmup/db/seeds.rb', 'w') do |file|
+    file.write(seed)
+  end
+end
+
+def generate_seed_file
+  hash = parse
+  seed = generate_seeds(hash)
+  write_seeds(seed)
+end
+
+generate_seed_file
